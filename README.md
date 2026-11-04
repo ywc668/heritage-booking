@@ -7,18 +7,22 @@ reschedule or cancel online up to *N* hours before the appointment (default 24h)
 **Admins** manage optometrists, weekly working hours, session length, time off, all appointments
 (including booking on behalf of walk-in / phone customers), customers, and business settings.
 
-Stack: Next.js 16 (App Router) · Auth.js v5 · Prisma · SQLite (swap to Postgres with one line) · Tailwind.
+Stack: Next.js 16 (App Router) · Auth.js v5 · Prisma · Postgres · Tailwind.
 
 ## Quick start
+
+You need a Postgres database (local Docker, or a free [Neon](https://neon.tech) project).
 
 ```bash
 npm install
 cp .env.example .env            # then edit .env (see below)
-npm run db:push                 # create the database
+npm run db:migrate              # apply migrations
 npm run db:seed                 # default optometrist (Mon–Sun 9:00–18:00, 20 min) + admin account
 npm run db:demo                 # optional: a few sample customers and bookings
 npm run dev                     # http://localhost:3000
 ```
+
+Local Postgres in one line: `docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=heritage postgres:16`
 
 Default admin login (staff form on `/login`): `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`
 (`admin@heritage.local` / `change-me-now` unless you change them **before** seeding).
@@ -27,7 +31,7 @@ Default admin login (staff form on `/login`): `ADMIN_EMAIL` / `ADMIN_PASSWORD` f
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | `file:./dev.db` for SQLite. For Postgres change `provider = "postgresql"` in `prisma/schema.prisma`. |
+| `DATABASE_URL` | Postgres connection string |
 | `AUTH_SECRET` | `openssl rand -base64 32` |
 | `AUTH_URL` | Public URL, e.g. `https://book.thisisheritage.co` |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth app. Redirect URI: `{AUTH_URL}/api/auth/callback/google` |
@@ -64,10 +68,21 @@ A social button only appears on `/login` when its ID + secret are set, so you ca
 | `/admin/settings` | admin | business name, timezone, cutoff, window |
 | `/api/availability` | public | JSON slots (used by the booking UI) |
 
-## Deploying
+## Deploying to Vercel
 
-Any Node host works (Vercel, Railway, Render, Fly, a VPS with `npm run build && npm start`).
-For anything beyond a single server, switch `DATABASE_URL` to Postgres and run `npx prisma migrate deploy`.
+1. Push this repo to GitHub and import it at https://vercel.com/new (framework: Next.js, no changes needed —
+   the `vercel-build` script runs `prisma migrate deploy && next build`).
+2. Database: in the Vercel project go to **Storage → Create → Neon (Postgres)**. This adds `DATABASE_URL`
+   to the project automatically. (Any other Postgres works too: paste its URL as `DATABASE_URL`.)
+3. Environment variables (Settings → Environment Variables):
+   `AUTH_SECRET` (`openssl rand -base64 32`), `AUTH_TRUST_HOST=true`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
+   `ADMIN_EMAILS` (your own Google/Microsoft email so you become admin on first social login), `BUSINESS_TIMEZONE`,
+   and the social provider keys when you have them.
+4. Deploy. Then seed once from your machine against the production database:
+   `DATABASE_URL="<neon url>" ADMIN_EMAIL=... ADMIN_PASSWORD=... npm run db:seed`
+5. Add the production URL to each OAuth app's redirect URIs (see table above), and set `AUTH_URL` to it.
+
+Other Node hosts (Railway, Render, Fly, a VPS) work the same way: `npm run db:migrate && npm run build && npm start`.
 
 Later, the main website can simply link "Book now" to this app's URL.
 

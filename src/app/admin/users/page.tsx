@@ -7,7 +7,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
   const { q } = await searchParams;
   const me = await auth();
   const users = await prisma.user.findMany({
-    where: q ? { OR: [{ name: { contains: q } }, { email: { contains: q } }, { phone: { contains: q } }] } : undefined,
+    where: q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }, { phone: { contains: q } }] } : undefined,
     include: { _count: { select: { appointments: true } }, accounts: { select: { provider: true } } },
     orderBy: { createdAt: "desc" },
     take: 200,

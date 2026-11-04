@@ -27,7 +27,7 @@ export default async function AdminAppointments({
   }
   if (sp.status && STATUSES.includes(sp.status as AppointmentStatus)) where.status = sp.status as AppointmentStatus;
   if (sp.providerId) where.providerId = sp.providerId;
-  if (sp.q) where.user = { OR: [{ name: { contains: sp.q } }, { email: { contains: sp.q } }, { phone: { contains: sp.q } }] };
+  if (sp.q) where.user = { OR: [{ name: { contains: sp.q, mode: "insensitive" } }, { email: { contains: sp.q, mode: "insensitive" } }, { phone: { contains: sp.q } }] };
 
   const [appts, providers] = await Promise.all([
     prisma.appointment.findMany({ where, include: { user: true, provider: true }, orderBy: { startsAt: range === "past" ? "desc" : "asc" }, take: 300 }),
