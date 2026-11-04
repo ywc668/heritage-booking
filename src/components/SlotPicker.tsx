@@ -156,7 +156,7 @@ export function SlotPicker({
       {error && <p className="text-sm text-red-700">{error}</p>}
 
       <div>
-        {loadingSlots ? (
+        {loadingDays && days.length === 0 ? null : loadingSlots ? (
           <p className="text-sm text-muted">Loading times…</p>
         ) : slots.length === 0 ? (
           <p className="text-sm text-muted">No times available on this day.</p>

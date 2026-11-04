@@ -31,6 +31,6 @@ export async function GET(req: Request) {
   const from = url.searchParams.get("from") || dateStrInTz(new Date(), settings.timezone);
   const days = Math.min(Math.max(Number(url.searchParams.get("days") || 14), 1), 60);
   if (!isValidDateStr(from)) return NextResponse.json({ error: "bad from" }, { status: 400 });
-  const result = await getBookableDays(providerId, from, days);
+  const result = await getBookableDays(providerId, from, days, { forAdmin, ignoreAppointmentId });
   return NextResponse.json({ timezone: settings.timezone, days: result });
 }
