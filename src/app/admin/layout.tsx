@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { isDeviceEnrolled } from "@/lib/device";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/admin");
   if (session.user.role !== "ADMIN") redirect("/");
+  if (!(await isDeviceEnrolled())) redirect("/enroll-device");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[12rem_1fr] gap-6">
       <aside className="md:border-r border-border md:pr-4">

@@ -51,6 +51,13 @@ A social button only appears on `/login` when its ID + secret are set, so you ca
 - Customers can reschedule/cancel until `cancelCutoffHours` before the start (default 24). After that the UI tells them to phone the practice; admins can still change anything.
 - Double-booking is prevented server-side (availability is recomputed inside the booking transaction).
 
+## Admin device binding
+
+Set `ADMIN_DEVICE_SECRET` (e.g. `openssl rand -hex 32`) in production. The admin console then requires, on top of an
+admin login, a one-year httpOnly cookie that is only issued to a browser where the key was entered once at
+`/enroll-device`. A stolen admin password alone is not enough to reach the console from another device.
+Rotate the secret to sign every enrolled device out. Leave it unset for local development.
+
 ## Routes
 
 | Path | Who | What |
@@ -60,6 +67,7 @@ A social button only appears on `/login` when its ID + secret are set, so you ca
 | `/appointments` | customer | upcoming/past, reschedule, cancel |
 | `/appointments/[id]/reschedule` | customer | pick a new time |
 | `/login` | public | social buttons + staff email/password |
+| `/enroll-device` | admin | enter the device key once per browser (see Admin device binding) |
 | `/admin` | admin | today's schedule |
 | `/admin/appointments` | admin | search/filter, open, change status/notes, move |
 | `/admin/appointments/new` | admin | book for a customer by email |
@@ -77,6 +85,7 @@ A social button only appears on `/login` when its ID + secret are set, so you ca
 3. Environment variables (Settings → Environment Variables):
    `AUTH_SECRET` (`openssl rand -base64 32`), `AUTH_TRUST_HOST=true`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
    `ADMIN_EMAILS` (your own Google/Microsoft email so you become admin on first social login), `BUSINESS_TIMEZONE`,
+   `ADMIN_DEVICE_SECRET` (see Admin device binding),
    and the social provider keys when you have them.
 4. Deploy. Then seed once from your machine against the production database:
    `DATABASE_URL="<neon url>" ADMIN_EMAIL=... ADMIN_PASSWORD=... npm run db:seed`

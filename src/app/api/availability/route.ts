@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { getAvailableSlots, getBookableDays } from "@/lib/availability";
 import { getSettings } from "@/lib/settings";
 import { dateStrInTz, isValidDateStr } from "@/lib/time";
+import { isDeviceEnrolled } from "@/lib/device";
 
 /**
  * GET /api/availability?providerId=…&date=YYYY-MM-DD           -> slots for one day
@@ -15,7 +16,7 @@ export async function GET(req: Request) {
   if (!providerId) return NextResponse.json({ error: "providerId required" }, { status: 400 });
 
   const session = await auth();
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = session?.user?.role === "ADMIN" && (await isDeviceEnrolled());
   const forAdmin = isAdmin && url.searchParams.get("admin") === "1";
   const ignoreAppointmentId = url.searchParams.get("ignore") || undefined;
 

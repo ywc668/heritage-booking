@@ -7,6 +7,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import type { Role } from "@prisma/client";
+import { isDeviceEnrolled } from "@/lib/device";
 
 const adminEmails = (process.env.ADMIN_EMAILS ?? "")
   .split(",")
@@ -92,5 +93,6 @@ export async function requireUser() {
 export async function requireAdmin() {
   const user = await requireUser();
   if (user.role !== "ADMIN") throw new Error("FORBIDDEN");
+  if (!(await isDeviceEnrolled())) throw new Error("DEVICE_NOT_ENROLLED");
   return user;
 }
