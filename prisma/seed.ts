@@ -11,15 +11,17 @@ async function main() {
     create: { id: 1, businessName: "Heritage", timezone: tz, cancelCutoffHours: 24 },
   });
 
-  // Default optometrist: Mon–Sun 09:00–18:00, 20-minute sessions, no buffer.
+  // Default optometrist: Mon–Fri 09:00–18:00, Sat 09:00–17:00, closed Sunday; 20-minute sessions, no buffer.
   const count = await prisma.provider.count();
   if (count === 0) {
     const provider = await prisma.provider.create({
       data: { name: "Optometrist", title: "Optometrist", slotMinutes: 20, bufferMinutes: 0 },
     });
     for (let weekday = 0; weekday < 7; weekday++) {
+      const enabled = weekday !== 0; // closed on Sunday
+      const endMinutes = weekday === 6 ? 17 * 60 : 18 * 60; // Saturday closes at 5 pm
       await prisma.workingHours.create({
-        data: { providerId: provider.id, weekday, startMinutes: 9 * 60, endMinutes: 18 * 60, enabled: true },
+        data: { providerId: provider.id, weekday, startMinutes: 9 * 60, endMinutes, enabled },
       });
     }
     console.log("Created default provider", provider.name);

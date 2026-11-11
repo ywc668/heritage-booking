@@ -59,9 +59,9 @@ export async function createProvider(_prev: FormState, formData: FormData): Prom
     data: {
       ...rest,
       email: email || null,
-      // Default schedule for a new optometrist: Mon–Sun 09:00–18:00
+      // Default schedule for a new optometrist: Mon–Fri 09:00–18:00, Sat 09:00–17:00, closed Sunday
       workingHours: {
-        create: Array.from({ length: 7 }, (_, weekday) => ({ weekday, startMinutes: 540, endMinutes: 1080, enabled: true })),
+        create: Array.from({ length: 7 }, (_, weekday) => ({ weekday, startMinutes: 540, endMinutes: weekday === 6 ? 1020 : 1080, enabled: weekday !== 0 })),
       },
     },
   });

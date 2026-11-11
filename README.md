@@ -17,7 +17,7 @@ You need a Postgres database (local Docker, or a free [Neon](https://neon.tech) 
 npm install
 cp .env.example .env            # then edit .env (see below)
 npm run db:migrate              # apply migrations
-npm run db:seed                 # default optometrist (Mon–Sun 9:00–18:00, 20 min) + admin account
+npm run db:seed                 # default optometrist (Mon–Fri 9:00–18:00, Sat 9:00–17:00, closed Sun, 20 min) + admin account
 npm run db:demo                 # optional: a few sample customers and bookings
 npm run dev                     # http://localhost:3000
 ```
