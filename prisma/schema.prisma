@@ -79,7 +79,7 @@ model VerificationToken {
 model Settings {
   id                Int    @id @default(1)
   businessName      String @default("Heritage")
-  timezone          String @default("Australia/Sydney")
+  timezone          String @default("America/Toronto")
   cancelCutoffHours Int    @default(24)  // customers may reschedule/cancel up to N hours before
   bookingWindowDays Int    @default(60)  // how far ahead customers can book
   minNoticeMinutes  Int    @default(60)  // earliest a slot can be booked relative to now

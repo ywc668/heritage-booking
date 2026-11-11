@@ -33,7 +33,7 @@ export async function updateSettings(_prev: FormState, formData: FormData): Prom
   try {
     new Intl.DateTimeFormat("en", { timeZone: parsed.data.timezone });
   } catch {
-    return { error: "Unknown timezone. Use an IANA name such as Australia/Sydney or America/Los_Angeles." };
+    return { error: "Unknown timezone. Use an IANA name such as America/Toronto or America/Vancouver." };
   }
   await prisma.settings.update({ where: { id: 1 }, data: parsed.data });
   revalidateAdmin();
