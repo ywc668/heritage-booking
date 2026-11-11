@@ -4,6 +4,6 @@ export async function getSettings() {
   return prisma.settings.upsert({
     where: { id: 1 },
     update: {},
-    create: { id: 1, timezone: process.env.BUSINESS_TIMEZONE || "Australia/Sydney" },
+    create: { id: 1, timezone: process.env.BUSINESS_TIMEZONE || "America/Toronto" },
   });
 }

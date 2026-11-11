@@ -6,14 +6,14 @@ type Slot = { startsAt: string; endsAt: string };
 type Day = { dateStr: string; hasSlots: boolean };
 
 function fmtTime(iso: string, tz: string) {
-  return new Intl.DateTimeFormat("en-AU", { hour: "numeric", minute: "2-digit", timeZone: tz }).format(new Date(iso));
+  return new Intl.DateTimeFormat("en-CA", { hour: "numeric", minute: "2-digit", timeZone: tz }).format(new Date(iso));
 }
 function fmtDay(dateStr: string) {
   const d = new Date(`${dateStr}T12:00:00Z`);
   return {
-    weekday: new Intl.DateTimeFormat("en-AU", { weekday: "short", timeZone: "UTC" }).format(d),
-    day: new Intl.DateTimeFormat("en-AU", { day: "numeric", timeZone: "UTC" }).format(d),
-    month: new Intl.DateTimeFormat("en-AU", { month: "short", timeZone: "UTC" }).format(d),
+    weekday: new Intl.DateTimeFormat("en-CA", { weekday: "short", timeZone: "UTC" }).format(d),
+    day: new Intl.DateTimeFormat("en-CA", { day: "numeric", timeZone: "UTC" }).format(d),
+    month: new Intl.DateTimeFormat("en-CA", { month: "short", timeZone: "UTC" }).format(d),
   };
 }
 function shiftDate(dateStr: string, days: number) {

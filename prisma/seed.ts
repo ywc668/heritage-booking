@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const tz = process.env.BUSINESS_TIMEZONE || "Australia/Sydney";
+  const tz = process.env.BUSINESS_TIMEZONE || "America/Toronto";
   await prisma.settings.upsert({
     where: { id: 1 },
     update: {},

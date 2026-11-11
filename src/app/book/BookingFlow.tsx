@@ -40,7 +40,7 @@ export function BookingFlow({
   }
 
   const slotLabel = slot
-    ? new Intl.DateTimeFormat("en-AU", { dateStyle: "full", timeStyle: "short" }).format(new Date(slot.startsAt))
+    ? new Intl.DateTimeFormat("en-CA", { dateStyle: "full", timeStyle: "short" }).format(new Date(slot.startsAt))
     : null;
 
   return (
